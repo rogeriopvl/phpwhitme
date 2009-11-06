@@ -1,6 +1,14 @@
 <?php
+/**
+ * PHPWhitme - PHP library to interact with whit.me url
+ * shortening service.
+ *
+ * @author Rogerio Vicente <http://rogeriopvl.com>
+ * @version 0.1
+ * @license GPLv3 <http://www.gnu.org/licenses/gpl.html>
+ */
 
-class PWhitme
+class PHPWhitme
 {
 	const SHORT_URL = "http://www.whit.me/api/short?";
 	const EXPAND_URL = "http://www.whit.me/api/expand?";
@@ -10,26 +18,42 @@ class PWhitme
 	 */
 	public function __construct()
 	{
-		
+		// am I needed?
 	}
 	
 	/**
 	 * Connects to the whit.me api and returns the response
 	 */
-	private function connect()
+	private function fetch_response($url)
 	{
+		$opts = array(
+		  'http'=>array(
+		    'method'=>"GET",
+		    'header'=>"Accept: application/json\r\n"
+		  )
+		);
+
+		$context = stream_context_create($opts);
 		
+		return file_get_contents($url, false, $context);
 	}
 	
 	/**
 	 * Shorts a list of given urls and notes
-	 * @param array $urls an associative array containing urls and respective notes
+	 * @param array $urls all urls to be shortened
+	 * @param array $urlnotes notes of respective urls. Must have same size of $urls
 	 * @param string $note the note to be paired with a url
 	 * @param string $hash custom url alias
+	 * @return string the shortened url
 	 */
-	public function short($urls, $note, $hash)
+	public function short($urls, $urlnotes, $note=null, $hash=null)
 	{
+		$params = 'url='.implode('&url=', $urls);
+		$params .= '&urlnote='.implode('$urlnote=', $urlnotes);
+		$params .= $note !== null ? '&note='.$note : '';
+		$params .= $hash !== null ? '&hash='.$hash : '';
 		
+		return $this->fetch_response(SHORT_URL.urlencode($params));
 	}
 	
 	/**
@@ -40,7 +64,7 @@ class PWhitme
 	 */
 	public function expand($hash)
 	{
-		$this->connect
+		// to do
 	}
 }
 
