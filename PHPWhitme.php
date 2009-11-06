@@ -88,7 +88,9 @@ class PHPWhitme
 	 */
 	public function expand($hash)
 	{
-		// to do
+		$params = 'hash='.$hash;
+		
+		return json_decode($this->fetch_response(self::EXPAND_URL.$params), true);
 	}
 }
 

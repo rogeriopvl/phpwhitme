@@ -10,5 +10,8 @@
 
 	$urlnotes = array();
 
-	print_r($pwm->short($urls, $urlnotes));
+	//print_r($pwm->short($urls, $urlnotes));
+
+	$hash = 'nxUW8K';
+	print_r($pwm->expand($hash));
 ?>
