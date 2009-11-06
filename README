@@ -1,6 +1,6 @@
 PHPWhitme is a PHP library to interact with the http://whit.me url shortening service.
 
-Note that this is still very experimental, and is allot to be optimized.
+Note that this is still very experimental, and there is allot to be optimized.
 
 
 Usage examples:
