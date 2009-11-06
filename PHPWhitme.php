@@ -40,16 +40,23 @@ class PHPWhitme
 	
 	/**
 	 * Shorts a list of given urls and notes
-	 * @param array $urls all urls to be shortened
-	 * @param array $urlnotes notes of respective urls. Must have same size of $urls
+	 * @param mixed $urls all urls to be shortened in 
+	 * 			array or string (in case of only 1 url)
+	 * @param mixed $urlnotes notes of respective urls.
+	 *			Array or string. Must have same size and same type of $urls
 	 * @param string $note the note to be paired with a url
 	 * @param string $hash custom url alias
 	 * @return string the shortened url
 	 */
 	public function short($urls, $urlnotes, $note=null, $hash=null)
 	{
-		$params = 'url='.implode('&url=', $urls);
-		$params .= '&urlnote='.implode('$urlnote=', $urlnotes);
+		if (gettype($urls) != gettype($urlnotes) || count($urls) != count($urlnotes))
+		{
+			throw new Exception('Number of urls must match number of notes.');
+		}
+		
+		$params = is_array($urls) ? 'url='.implode('&url=', $urls) : 'url='.$urls;
+		$params .= is_array($urlnotes) ? '&urlnote='.implode('$urlnote=', $urlnotes) : 'urlnote='.$urlnotes;
 		$params .= $note !== null ? '&note='.$note : '';
 		$params .= $hash !== null ? '&hash='.$hash : '';
 		
