@@ -15,7 +15,7 @@ $whitme = new PHPWhitme();
 $url = 'http://rogeriopvl.com';
 $note = 'my personal website';
 
-print_r($whitme->short($url, $note);
+print_r($whitme->short($url, $note));
 
 
 Shorten url with a personalized alias:
@@ -28,7 +28,7 @@ $url = 'http://rogeriopvl.com';
 $note = 'my personal website';
 $alias = 'mysite';
 
-print_r($whiteme->short($url, $note, null, $alias);
+print_r($whiteme->short($url, $note, null, $alias));
 
 
 Expand url:
