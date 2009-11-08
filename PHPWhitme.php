@@ -8,6 +8,14 @@
  * @license GPLv3 <http://www.gnu.org/licenses/gpl.html>
  */
 
+class NoHashProvidedException extends Exception { }
+class MalformedUrlException extends Exception { }
+class InvalidAliasException extends Exception { }
+class InvalidArgsException extends Exception { }
+
+/**
+ * Maps all Whit.me available api operations
+ */
 class PHPWhitme
 {
 	const SHORT_URL = "http://www.whit.me/api/short?";
@@ -51,7 +59,7 @@ class PHPWhitme
 		
 		if (gettype($urls) != gettype($urlnotes) || count($urls) != count($urlnotes))
 		{
-			throw new Exception('Number and type of urls must match number and type of notes.');
+			throw new InvalidArgsException('Number and type of urls must match number and type of notes.');
 		}
 		
 		$params = '';
@@ -62,7 +70,7 @@ class PHPWhitme
 		}
 		else
 		{
-			$param .= 'url='.urlencode($urls);
+			$params .= 'url='.urlencode($urls);
 		}
 		
 		if (is_array($urlnotes))
@@ -77,20 +85,61 @@ class PHPWhitme
 		$params .= $note !== null ? '&note='.$note : '';
 		$params .= $hash !== null ? '&hash='.$hash : '';
 
-		return $this->fetch_response(self::SHORT_URL.$params);
+		$response = json_decode($this->fetch_response(self::SHORT_URL.$params), true);
+		
+		if (isset($response['error']))
+		{
+			if ($response['error'] == 0)
+			{
+				throw new MalformedUrlException('Invalid alias or incorrect url.');
+			}
+			else if ($response['error'] == 1)
+			{
+				throw new InvalidAliasException('Invalid alias.');
+			}
+			else
+			{
+				throw new Exception('Api returned unknown error.');
+			}
+		}
+		
+		return $response;
 	}
 	
 	/**
 	 * Expands the content of a whit.me hash
-	 * @param string $hash the hash to be expanded
+	 * @param string $hash the hash to be expanded or full whit.me url
 	 * @return array expanded hash in associative array
 	 * with the same format as the returned JSON response
 	 */
 	public function expand($hash)
 	{
-		$params = 'hash='.$hash;
+		if (strpos($hash, 'http://') !== false)
+		{
+			$aux = explode('/', $hash);
+			$hash = end($aux);
+		}
 		
-		return json_decode($this->fetch_response(self::EXPAND_URL.$params), true);
+		$params = 'hash='.$hash;
+		$response = json_decode($this->fetch_response(self::EXPAND_URL.$params), true);
+		
+		if (isset($response['error']))
+		{
+			if ($response['error'] == 0)
+			{
+				throw new MalformedUrlException('Malformed url.');
+			}
+			else if ($response['error'] == 1)
+			{
+				throw new NoHashProvidedException('Hash/alias does not exist.');
+			}
+			else
+			{
+				throw new Exception('Api returned unknown error.');
+			}
+		}
+		
+		return $response;
 	}
 }
 
