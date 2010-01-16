@@ -5,7 +5,7 @@
  *
  * @author Rogerio Vicente <http://rogeriopvl.com>
  * @version 0.1
- * @license GPLv3 <http://www.gnu.org/licenses/gpl.html>
+ * @license BSD License (check the LICENSE file)
  */
 
 class NoHashProvidedException extends Exception { }
@@ -35,10 +35,7 @@ class PHPWhitme
 	private function fetch_response($url)
 	{
 		$opts = array(
-		  'http'=>array(
-		    'method'=>"GET",
-		    'header'=>"Accept: application/json\r\n"
-		  )
+		  'http' => array( 'method' => "GET", 'header' => "Accept: application/json\r\n")
 		);
 
 		$context = stream_context_create($opts);
