@@ -1,3 +1,5 @@
+# *Update:* the service whit.me no longer exists
+
 #PHPWhitme
 
 ##Info
